@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/templates/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <style>
+        .hidden{
+            display: none;
+        }
+
+    </style>
+    <title>ForTest</title>
+</head>
+<body>
+    <form id="flip" action="">
+    <div style="text-align:right;">
+        <button id="change" style="width:100px ;height:60px;">flip</button>
+    </div>
+    </form>
+
+    <p style="color: rgb(13, 97, 149); text-align: center;">
+        
+    <h1 style="text-align: center;font-size: 60px;"><a href="/">YouTube Downloader</a></h1>
+</p>
+    
+
+    <form id="form1" class="" action="/" method="GET" onsubmit=onSubmit_1()>
+        <div id="text" style="text-align:center;">
+        <input type="text" name="url1" id="url1" style="width:700px;height: 60px;" placeholder="video 또는 playlist의 url">
+        <button type="submit" id="input-url1" style="width:200px;height: 60px;display:inline-block;">Search</button>
+    </div>
+    </form>
+
+    
+    <form id="form2" class="hidden" action="/" method="GET" onsubmit=onSubmit_2()>
+        <div id="text" style="text-align:center; font-size: 30px;font-weight: bold;">
+        <input type="text" size="60" name="url2" id="url2" style="width:700px;height: 60px;" placeholder="video의 url">
+        <button type="submit" id="input-url2" style="width:200px;height: 60px;display:inline-block;">Search</button><br>
+        <br>
+        
+        시작&nbsp;<input type="text" value="00:00:00" style="width:370px;height: 50px;" onKeyup="inputTimeColon(this);" name="start">
+        &nbsp;~&nbsp;끝&nbsp;<input type="text" value="00:00:00" style="width:370px;height:50px;display:inline-block;" onKeyup="inputTimeColon(this);" name="end">
+        </div>
+    </form>
+    <script>
+        const input1 = document.querySelector("#input-url1")
+        const input2 = document.querySelector("#input-url2")
+
+        const submitButton = document.querySelector("#download")
+        const selected = document.getElementsByName("vids")
+        const selected_icon = document.getElementsByName("icon")
+
+        
+
+
+        function onSubmit_1(){
+            
+            console.log(input1)
+            console.log("check")
+            
+            input1.innerText="loading..."
+
+            return true
+            
+        }
+
+        function onSubmit_2(){
+           
+            
+            input2.innerText="loading..."
+
+
+            return true
+            
+        }
+
+
+        function onSubmit_3(){
+            console.log("here!")
+            
+            const download_button = document.getElementById("download")
+            download_button.innerText="loading..."
+
+            return true
+
+        }
+
+
+    </script>
+
+    <script type="text/javascript">
+        function inputTimeColon(time) {
+    
+            // 먼저 기존에 들어가 있을 수 있는 콜론(:)기호를 제거한다.
+            var replaceTime = time.value.replace(/\:/g, "");
+    
+            // 글자수가 4 ~ 5개 사이일때만 동작하게 고정한다.
+            if(replaceTime.length >= 6 && replaceTime.length < 7) {
+    
+                // 시간을 추출
+                var hours = replaceTime.substring(0, 2);
+    
+                // 분을 추출
+                var minute = replaceTime.substring(2, 4);
+
+                var second = replaceTime.substring(4, 6);
+    
+                // 시간은 24:00를 넘길 수 없게 세팅
+                if(hours + minute > 2400) {
+                    alert("시간은 24시를 넘길 수 없습니다.");
+                    time.value = "24:00";
+                    return false;
+                }
+    
+                // 분은 60분을 넘길 수 없게 세팅
+                if(minute > 60) {
+                    alert("분은 60분을 넘길 수 없습니다.");
+                    time.value = hours + ":00";
+                    return false;
+                }
+
+                if(second > 60) {
+                    alert("초는 60분을 넘길 수 없습니다.");
+                    time.value = hours + ":00";
+                    return false;
+                }
+    
+                // 콜론을 넣어 시간을 완성하고 반환한다.
+                time.value = hours + ":" + minute+ ":" + second;
+            }
+        }
+    </script>
+
+
+
+
+
+    {% if datas|length > 0 %}
+    <form action="/downloads" method="post" onsubmit=onSubmit_3()>
+    <table>
+        <tr>
+            <td><input type="checkbox" id="selectall" name="selectall" value="select"></td>
+            <div style="font-size: 30px;font-weight: bold;">
+            <td style="font-weight: bold;font-size: 25px;">전체선택&nbsp;&nbsp;<button type="submit" id="download" style="width: 150px;height: 50px;display:inline-block;line-height: 20px;">download</button></td>
+            </div>
+            
+        </tr>
+        {% for d in datas %}
+            <tr>
+                <td><input type="checkbox" name="vids" value="{{d}}"></td>
+                <td>{{d.title}}</td>
+                <td><a href="{{d.url}}"><img id="icon" src="/static/images/playicon.png" height="25px" width="25px"></a></td>
+            </tr>
+        {%endfor%}
+    </table>
+    </form>
+
+    {% endif %}
+
+
+
+
+
+    <script>
+        const inputUrl1= document.querySelector("#input-url1")
+        const inputUrl2= document.querySelector("#input-url2")
+
+        function onClickEv(){
+            inputUrl1.value = ""
+            inputUrl2.value = ""
+
+        }
+
+        inputUrl1.addEventListener("click", onClickEv)
+        inputUrl2.addEventListener("click", onClickEv)
+
+    </script>
+
+
+    <script>
+        const checkAll = document.querySelector("#selectall");
+        const checkboxes = document.getElementsByName("vids");
+
+        function onCheckAll(){
+            if(checkAll.checked==true){
+                  for(var i=0;i<checkboxes.length;i++) checkboxes[i].checked=true;   
+               }
+               if(checkAll.checked==false){
+                  for(var i=0;i<checkboxes.length;i++) checkboxes[i].checked=false;  
+               }
+         }
+         checkAll.addEventListener("click",onCheckAll);
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+    <script>
+        const changeFrom = document.querySelector("#flip")
+        const form1 = document.querySelector("#form1")
+        const form2 = document.querySelector("#form2")
+        const button = document.querySelector("#change")
+        const url1 = document.querySelector("#url1")
+        const url2 = document.querySelector("#url2")
+
+        
+
+        HIDDEN_CLASSNAME="hidden"
+
+        console.log(changeFrom)
+        console.log(button)
+
+
+        function onChange(event){
+            event.preventDefault()
+            
+            if (form1.className != HIDDEN_CLASSNAME){
+                form1.className = HIDDEN_CLASSNAME
+                form2.className = ""
+                button.innerText = "flip"
+                url1.value = ""
+
+            }else{
+                form2.className = HIDDEN_CLASSNAME
+                form1.className = ""
+                button.innerText = "flip"
+                url2.value =""
+            }
+            
+        }
+
+        changeFrom.addEventListener("click", onChange)
+
+        
+
+    </script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <title>Download</title>
+</head>
+<body>
+    <form id="flip" action="">
+        <div style="text-align:right;display: none;">
+            <button id="change" style="width:100px ;height:60px;">flip</button>
+        </div>
+        </form>
+    
+        <p style="color: rgb(13, 97, 149); text-align: center;">
+            
+        <h1 style="text-align: center;font-size: 60px;"><a href="/">YouTube Downloader</a></h1>
+    </p>
+    <br><br>
+    
+
+    {% if data|length > 0 %}
+    
+    <table>
+        
+        <form action="/getvid" method="post">
+            <tr>
+                <input type="text" name="videopath" value="{{data.path}}" style="display: none;">
+                <td></td>
+                <td>{{data.title}}</td>
+                <td><button type="submit"><img id="icon" src="/static/images/download_icon.png" height="35px" width="35px"></button></td>
+            </tr>
+        </form>
+    </table>
+    
+
+    {% endif %}
+
+
+</body>
+</html>
