@@ -4,7 +4,10 @@ import os
 from pytube import Playlist
 from pytube import Channel
 import ffmpeg
+import ssl
+import youtube_dl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 
@@ -26,23 +29,38 @@ def replace_invalid(text:str):
 
 
 
-
 def video_download(url, foldername):
-    mk_vdir(foldername)
-    
-    yt = YouTube(url)
-    video_title= yt.title
-   
-    title= replace_invalid(yt.title)
-    
-    
-    stream = yt.streams.get_highest_resolution()
-    if len(video_title)>=50:
-        video_title=video_title[:50]
-    
-    stream.download(foldername, filename=title)
-    
+    ydl_opts = {
+        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+        'outtmpl': foldername + '/%(title)s.%(ext)s'
+    }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        video_title = info['title']
+        title = replace_invalid(video_title)
+        ydl.download([url])
+
     return title, video_title
+
+
+
+# def video_download(url, foldername):
+#     mk_vdir(foldername)
+    
+#     yt = YouTube(url)
+#     video_title= yt.title
+   
+#     title= replace_invalid(yt.title)
+    
+    
+#     stream = yt.streams.get_highest_resolution()
+#     if len(video_title)>=50:
+#         video_title=video_title[:50]
+    
+#     stream.download(foldername, filename=title)
+    
+#     return title, video_title
 
 
 
@@ -167,7 +185,7 @@ def mp3_download(url, foldername)->str:
 
 
 def cut_video(dirname, start_t, end_t, filename=None):
-
+    
     if filename:
         input_ = os.path.join(dirname, filename)
         new_filename="cut_"+filename
